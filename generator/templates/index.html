@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+    li{
+    margin: 4px;
+    margin-left: 16%;
+    }
+    ul{
+    text-align: left;
+    }
+</style>
+</head>
+<body>
+<h3 style="text-align:center; margin-top:5px;" class="text-primary">Random Password Generator</h3>
+<div class="outer bg-secondary mx-auto p-4" style="text-align:center; width:50%; margin-top:2%;">
+
+    <form style="width:70%; margin:auto;" class="text-light">
+        <label class="text-light">Set Password length</label>
+        <span style="float: left;">4</span>
+        <span style="float: right;">2048</span>
+
+    <input type="range" min="4" max="2048" value="12" class="form-control-range" id="formControlRange" oninput="showValue(this.value)">
+   </form><br>
+    <div class="text-field">
+        <input id="pass_length" value="10" type="number" name="length">
+    </div><br>
+    <div class="check-box text-light">
+        <ul style="list-style-type:none; ">
+            <li>
+                        <input type="checkbox"  id="uppercase" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ">&nbsp;A-Z uppercase letters</input>
+
+            </li>
+            <li>
+                        <input type="checkbox"  id="lowercase" value="abcdefghijklmnopqrstuvwxyz">&nbsp;a-z lowercase letters</input>
+
+            </li>
+            <li>
+                        <input type="checkbox"  id="digits" value="0123456789"></input>&nbsp;0-9 digits
+
+            </li>
+            <li>
+                        <input type="checkbox"  id="special" value="!@#$%^&*">&nbsp;(!@#$%^&*)=symbols</input>
+
+            </li>
+            <li>
+                        <input type="checkbox"  id="avoid">&nbsp;Avoid similar characters(lli0Oo)</input>
+
+            </li>
+        </ul>
+    </div><br>
+    <div class="button1">
+        <input class="generate btn btn-info" type="button" onclick="generate()" value="Generate">&nbsp;&nbsp;
+        <input class="clear btn btn-info" type="button" onclick="document.getElementById('generated_pass').value = '';
+        document.getElementById('uppercase').checked = true;
+        document.getElementById('lowercase').checked = true;
+        document.getElementById('digits').checked = true;
+        document.getElementById('special').checked = true;
+    " value="Clear">
+    </div><br>
+    <div class="text-field2">
+        <label class="text-light">Generated Password</label><br>
+        <input class="generated-pass" value="" id="generated_pass" type="text" name="generated_pass">
+    </div><br>
+    <div class="button2">
+        <input class="btn btn-info" type="button" onclick="copy()" name="copy" value="Copy">&nbsp;&nbsp;
+        <input class="btn btn-info" type="button" id="show_hide" onclick="show_hide()" name="hide_show" value="Hide">
+    </div><br>
+</div>
+
+<script>
+var uppercase = document.getElementById("uppercase");
+var lowercase = document.getElementById("lowercase");
+var digits = document.getElementById("digits");
+var special = document.getElementById("special");
+var avoid = document.getElementById("avoid");
+var message = "";
+
+function generate(){
+    if(!check())
+        console.log(genPassword());
+    else
+        console.log(check());
+}
+
+function genPassword(){
+    var uppercase = document.getElementById("uppercase");
+    var lowercase = document.getElementById("lowercase");
+    var digits = document.getElementById("digits");
+    var special = document.getElementById("special");
+    var avoid = document.getElementById("avoid");
+    var password = "";
+    var characters="";
+    if(uppercase.checked)
+        characters+=uppercase.value;
+    if(lowercase.checked)
+        characters+=lowercase.value;
+    if(digits.checked)
+        characters+=digits.value;
+    if(special.checked)
+        characters+=special.value;
+
+    var arr = characters.split('');
+    var x = document.getElementById("pass_length").value;
+     for (let i = 0; i < parseInt(x); i++) {
+            var char = Math.floor(Math.random() * arr.length);
+            password += arr[char];
+     }
+     console.log(password);
+     if(avoid.checked){
+         if(password.match(/l1/) || password.match(/li/) || password.match(/O0/)){
+            password = '';
+            genPassword();
+         }
+     }
+      document.getElementById("generated_pass").value = password;
+}
+
+function check(){
+    var flag = uppercase.checked  || lowercase.checked || digits.checked || special.checked;
+    var x = document.getElementById("pass_length").value;
+    if(x==="" || parseInt(x)===NaN){
+        message = "Enter a valid length!"
+    }else{
+         if(!flag)
+            message ="Please select atleast one checkbox!" ;
+        else
+            return false;
+     }
+     return message;
+}
+
+function showValue(newValue){
+    document.getElementById("pass_length").value = newValue;
+}
+
+function copy(){
+     var copyText = document.getElementById("generated_pass");
+     copyText.select();
+     copyText.setSelectionRange(0, 99999);
+     document.execCommand("copy");
+
+}
+
+function show_hide() {
+    var element = document.getElementById("generated_pass");
+    if(element.type === "password") {
+        element.type = "text";
+    }
+    else {
+        element.type = "password";
+    }
+    if(document.getElementById("show_hide").value =="Hide")
+        document.getElementById("show_hide").value ="Show";
+    else
+        document.getElementById("show_hide").value ="Hide";
+
+}
+
+
+</script>
+
+
+</body>
+</html>
